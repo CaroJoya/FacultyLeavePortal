@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <h2 class="mb-4">📊 Leave Analytics</h2>
+
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center border-0 bg-danger text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">🏥 Medical Leaves</h5>
+                            <div class="display-6 fw-bold">{{ current_user.medical_leave_left }}</div>
+                            <small>Available</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-0 bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">🏖️ Casual Leaves</h5>
+                            <div class="display-6 fw-bold">{{ current_user.casual_leave_left }}</div>
+                            <small>Available</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-0 bg-success text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">💰 Earned Leaves</h5>
+                            <div class="display-6 fw-bold">{{ current_user.earned_leave_left }}</div>
+                            <small>Available</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-0 bg-warning text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">📈 Total Available</h5>
+                            <div class="display-6 fw-bold">
+                                {{ current_user.medical_leave_left + current_user.casual_leave_left + current_user.earned_leave_left }}
+                            </div>
+                            <small>All Categories</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="dashboard-card">
+                        <h5 class="card-title mb-4">📅 Monthly Leave Distribution - {{ current_year }}</h5>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="leaveChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="dashboard-card">
+                        <h5 class="card-title mb-4">🗓️ Leave Calendar - {{ current_year }}</h5>
+                        <div id="leaveCalendar" class="overflow-auto" style="max-height: 300px;">
+                            {% for month_num in range(1, 13) %}
+                            <div class="mb-4">
+                                <h6 class="fw-bold">{{ calendar.month_name[month_num] }}</h6>
+                                <div class="calendar-month">
+                                    {% set month_calendar = calendar.monthcalendar(current_year, month_num) %}
+                                    <div class="row text-center small fw-bold mb-2">
+                                        <div class="col p-1">Mon</div>
+                                        <div class="col p-1">Tue</div>
+                                        <div class="col p-1">Wed</div>
+                                        <div class="col p-1">Thu</div>
+                                        <div class="col p-1">Fri</div>
+                                        <div class="col p-1">Sat</div>
+                                        <div class="col p-1">Sun</div>
+                                    </div>
+                                    {% for week in month_calendar %}
+                                    <div class="row">
+                                        {% for day in week %}
+                                        <div class="col p-1">
+                                            {% if day != 0 %}
+                                                {% if current_year in calendar_data and month_num in calendar_data[current_year] and day in calendar_data[current_year][month_num] %}
+                                                <span class="badge bg-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem;">
+                                                    {{ day }}
+                                                </span>
+                                                {% else %}
+                                                <span class="text-muted small">{{ day }}</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overwork Statistics -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <h5 class="card-title mb-4">🔥 Overwork Statistics</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card text-center border-0 bg-warning text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">⏰ Pending Hours</h5>
+                                        <div class="display-6 fw-bold">{{ current_user.pending_overwork_hours }}</div>
+                                        <small>Waiting for Conversion</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center border-0 bg-success text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">💰 Converted Hours</h5>
+                                        <div class="display-6 fw-bold">{{ current_user.overwork_hours }}</div>
+                                        <small>Total Converted</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center border-0 bg-info text-white">
+                                    <div class="card-body">
+                                        <h5 class="card-title">📊 Earned Days</h5>
+                                        <div class="display-6 fw-bold">{{ current_user.earned_leave_total }}</div>
+                                        <small>From Overwork</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Initialize Chart
+    const ctx = document.getElementById('leaveChart').getContext('2d');
+    const leaveChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: JSON.parse('{{ month_names | safe }}'),
+            datasets: [{
+                label: 'Leave Days',
+                data: JSON.parse('{{ leave_days | safe }}'),
+                backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                borderColor: 'rgba(102, 126, 234, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <div class="text-center mb-4">
+                <div class="success-icon mb-3">
+                    <i class="fas fa-check-circle fa-5x text-success"></i>
+                </div>
+                <h2 class="text-success">✅ Faculty Account Created Successfully!</h2>
+                <p class="lead">Faculty account has been created and is ready to use.</p>
+            </div>
+
+            <!-- Faculty Details -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-8">
+                    <div class="card border-success">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-id-card me-2"></i>Faculty Credentials</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <strong>Full Name:</strong>
+                                    <p class="mb-0">{{ faculty.full_name }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Employee ID:</strong>
+                                    <p class="mb-0">{{ faculty.employee_id }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Email:</strong>
+                                    <p class="mb-0">{{ faculty.email }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Username:</strong>
+                                    <p class="mb-0">{{ faculty.username }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Department:</strong>
+                                    <p class="mb-0">{{ faculty.department }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Designation:</strong>
+                                    <p class="mb-0">{{ faculty.designation }}</p>
+                                </div>
+                                <div class="col-12">
+                                    <div class="alert alert-warning">
+                                        <strong>🔑 Temporary Password:</strong>
+                                        <code class="fs-5">{{ temp_password }}</code>
+                                        <br><small class="text-muted">Faculty must change this password after first login</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WhatsApp Integration -->
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fab fa-whatsapp me-2"></i>Send Joining Instructions via WhatsApp</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>WhatsApp Message:</strong></label>
+                                <textarea class="form-control" rows="8" readonly onclick="this.select()">{{ whatsapp_message }}</textarea>
+                                <small class="text-muted">Click to select all text, then copy and send via WhatsApp</small>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                {% if faculty.phone_number %}
+                                <a href="https://wa.me/{{ faculty.phone_number|replace('+', '')|replace(' ', '') }}?text={{ whatsapp_message|urlencode }}"
+                                   class="btn btn-success me-md-2" target="_blank">
+                                    <i class="fab fa-whatsapp me-2"></i> Send via WhatsApp
+                                </a>
+                                {% endif %}
+                                <button class="btn btn-outline-primary me-md-2" onclick="copyToClipboard()">
+                                    <i class="fas fa-copy me-2"></i> Copy Message
+                                </button>
+                                <a href="{{ url_for('admin_add_faculty') }}" class="btn btn-primary">
+                                    <i class="fas fa-user-plus me-2"></i> Add Another Faculty
+                                </a>
+                                <a href="{{ url_for('admin_faculty_list') }}" class="btn btn-secondary">
+                                    <i class="fas fa-users me-2"></i> View Faculty List
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const textarea = document.querySelector('textarea');
+    textarea.select();
+    document.execCommand('copy');
+
+    // Show feedback
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check me-2"></i> Copied!';
+    btn.classList.remove('btn-outline-primary');
+    btn.classList.add('btn-success');
+
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline-primary');
+    }, 2000);
+}
+</script>
+{% endblock %}

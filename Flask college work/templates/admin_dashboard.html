@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">Admin Dashboard</h2>
+                <span class="badge bg-success">ADMIN</span>
+            </div>
+
+            <!-- Welcome Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card text-white" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                        <div class="card-body">
+                            <h3>Welcome, {{ current_user.full_name }}!</h3>
+                            <p class="mb-0">Administrator Dashboard - System Management Panel</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="stat-icon mx-auto mb-3">
+                                <i class="fas fa-clock fa-2x text-warning"></i>
+                            </div>
+                            <div class="stat-number display-4 fw-bold text-warning">{{ pending_count }}</div>
+                            <div class="stat-title h5 text-muted">Pending Requests</div>
+                            <small class="text-muted">Awaiting approval</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="stat-icon mx-auto mb-3">
+                                <i class="fas fa-users fa-2x text-success"></i>
+                            </div>
+                            <div class="stat-number display-4 fw-bold text-success">{{ total_faculty }}</div>
+                            <div class="stat-title h5 text-muted">Total Faculty</div>
+                            <small class="text-muted">Registered users</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="stat-icon mx-auto mb-3">
+                                <i class="fas fa-check-circle fa-2x text-info"></i>
+                            </div>
+                            <div class="stat-number display-4 fw-bold text-info">{{ approved_this_month }}</div>
+                            <div class="stat-title h5 text-muted">Approved This Month</div>
+                            <small class="text-muted">Leave requests</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Administrative Functions -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-tasks me-2"></i>Administrative Functions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <a href="{{ url_for('admin_pending_requests') }}" class="text-decoration-none">
+                                        <div class="card border-0 bg-warning text-white text-center h-100">
+                                            <div class="card-body">
+                                                <i class="fas fa-tasks fa-2x mb-3"></i>
+                                                <h6>Pending Requests</h6>
+                                                <small>Review & Approve Leaves</small>
+                                                {% if pending_count > 0 %}
+                                                <div class="mt-2">
+                                                    <span class="badge bg-danger">{{ pending_count }} pending</span>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="{{ url_for('admin_faculty_list') }}" class="text-decoration-none">
+                                        <div class="card border-0 bg-success text-white text-center h-100">
+                                            <div class="card-body">
+                                                <i class="fas fa-users fa-2x mb-3"></i>
+                                                <h6>Faculty Management</h6>
+                                                <small>View all faculty</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="{{ url_for('admin_add_faculty') }}" class="text-decoration-none">
+                                        <div class="card border-0 bg-info text-white text-center h-100">
+                                            <div class="card-body">
+                                                <i class="fas fa-user-plus fa-2x mb-3"></i>
+                                                <h6>Add Faculty</h6>
+                                                <small>Create new accounts</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <a href="{{ url_for('admin_pending_requests') }}" class="btn btn-warning w-100 py-3">
+                                        <i class="fas fa-tasks me-2"></i> Review Pending Requests
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ url_for('admin_add_faculty') }}" class="btn btn-info w-100 py-3">
+                                        <i class="fas fa-user-plus me-2"></i> Add New Faculty
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 193, 7, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
+{% endblock %}

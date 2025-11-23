@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-6 col-lg-4">
+            <div class="dashboard-card">
+                <div class="text-center mb-4">
+                    <div class="logo-image mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-user-graduate text-white" style="font-size: 2rem;"></i>
+                    </div>
+                    <h2 class="fw-bold">Faculty Portal Login</h2>
+                    <p class="text-muted">Enter your credentials to access your account</p>
+                </div>
+
+                <!-- Flash Messages for Login Errors -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if category != 'password_change' %}
+                                <div class="alert alert-{{ 'success' if 'success' in message else 'danger' if 'error' in message else 'warning' }} alert-dismissible fade show mb-4">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('login') }}">
+                    <!-- User Type Selection -->
+                    <div class="mb-3">
+                        <label for="user_type" class="form-label">Login As</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                            <select class="form-select" id="user_type" name="user_type" required>
+                                <option value="faculty" selected>Faculty Member</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                            <button type="button" class="input-group-text" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember">
+                        <label class="form-check-label" for="remember">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                        <i class="fas fa-sign-in-alt me-2"></i> Sign In
+                    </button>
+
+                    <!-- FIXED: Forgot Password Link -->
+                    <div class="text-center">
+                        <a href="{{ url_for('forgot_password') }}" class="text-decoration-none">
+                            <i class="fas fa-question-circle me-2"></i> Forgot your password?
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Demo Credentials Info -->
+                <div class="mt-4 p-3 bg-light rounded">
+                    <h6 class="fw-bold"><i class="fas fa-info-circle me-2"></i>Demo Credentials</h6>
+                    <div class="small">
+                        <strong>Faculty:</strong> Use your faculty username (e.g., rashmi.gourkar)<br>
+                        <strong>Admin:</strong> username: <code>admin</code> | password: <code>admin123</code><br>
+                        <strong>Default Password:</strong> <code>password123</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('password');
+        const icon = this.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Focus on username field when page loads
+    document.getElementById('username').focus();
+
+    // Change placeholder based on user type
+    document.getElementById('user_type').addEventListener('change', function() {
+        const usernameInput = document.getElementById('username');
+        if (this.value === 'admin') {
+            usernameInput.placeholder = 'Enter admin username';
+        } else {
+            usernameInput.placeholder = 'Enter faculty ID or email';
+        }
+    });
+
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+{% endblock %}

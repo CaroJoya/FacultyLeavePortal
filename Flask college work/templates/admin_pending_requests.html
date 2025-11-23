@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">Pending Leave Requests</h2>
+                <div>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+
+            {% if pending_requests %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Faculty</th>
+                            <th>Department</th>
+                            <th>Leave Type</th>
+                            <th>Leave Category</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration</th>
+                            <th>Reason</th>
+                            <th>Applied On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request, faculty in pending_requests %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar me-2" style="width: 35px; height: 35px; font-size: 0.8rem;">
+                                        {{ faculty.full_name[0] }}{{ faculty.full_name.split(' ')[1][0] if faculty.full_name.split(' ')|length > 1 else faculty.full_name[1] }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ faculty.full_name }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ faculty.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ faculty.department }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if request.leave_type == 'full_day' %}bg-primary
+                                    {% else %}bg-warning text-dark{% endif %}">
+                                    {{ request.leave_type.replace('_', ' ').title() }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge
+                                    {% if request.leave_category == 'medical' %}bg-danger
+                                    {% elif request.leave_category == 'casual' %}bg-info
+                                    {% else %}bg-success{% endif %}">
+                                    {{ request.leave_category.title() }}
+                                </span>
+                            </td>
+                            <td>{{ request.start_date.strftime('%d/%m/%Y') }}</td>
+                            <td>{{ request.end_date.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if request.leave_type == 'half_day' %}
+                                {{ ((request.end_date - request.start_date).days + 1) * 0.5 }} days
+                                {% else %}
+                                {{ (request.end_date - request.start_date).days + 1 }} days
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="d-inline-block text-truncate" style="max-width: 200px;" title="{{ request.reason }}">
+                                    {{ request.reason }}
+                                </span>
+                            </td>
+                            <td>{{ request.created_at.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                <a href="{{ url_for('admin_request_details', request_id=request.id) }}" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i> Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                <h4 class="text-success">No Pending Requests</h4>
+                <p class="text-muted">All leave requests have been processed.</p>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

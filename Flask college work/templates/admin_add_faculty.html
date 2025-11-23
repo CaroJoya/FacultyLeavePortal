@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">👨‍🏫 Add New Faculty</h2>
+                <div>
+                    <a href="{{ url_for('admin_faculty_list') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Faculty List
+                    </a>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>Faculty Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" name="full_name" required
+                                               placeholder="Enter full name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email Address *</label>
+                                        <input type="email" class="form-control" name="email" required
+                                               placeholder="username@mes.ac.in">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Department *</label>
+                                        <select class="form-select" name="department" required>
+                                            <option value="">Select Department</option>
+                                            <option value="Computer Science">Computer Science</option>
+                                            <option value="Information Technology">Information Technology</option>
+                                            <option value="Electronics & Telecommunication">Electronics & Telecommunication</option>
+                                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                            <option value="Civil Engineering">Civil Engineering</option>
+                                            <option value="First Year Engineering">First Year Engineering</option>
+                                            <option value="Humanities & Sciences">Humanities & Sciences</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Designation</label>
+                                        <select class="form-select" name="designation">
+                                            <option value="Faculty">Faculty</option>
+                                            <option value="Assistant Professor">Assistant Professor</option>
+                                            <option value="Associate Professor">Associate Professor</option>
+                                            <option value="Professor">Professor</option>
+                                            <option value="HOD">Head of Department</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" name="phone_number"
+                                               placeholder="+91 9876543210">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Date of Joining</label>
+                                        <input type="date" class="form-control" name="date_of_joining">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            <h6><i class="fas fa-info-circle me-2"></i>Automatic Account Setup</h6>
+                                            <p class="mb-0">System will automatically generate:
+                                                <br>• Username (from email)
+                                                <br>• Employee ID
+                                                <br>• Temporary Password
+                                                <br>• WhatsApp joining message
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-success w-100 py-3">
+                                            <i class="fas fa-user-plus me-2"></i> Create Faculty Account
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

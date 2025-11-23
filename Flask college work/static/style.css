@@ -1,0 +1,202 @@
+/* Enhanced styles for the Faculty Leave Management System */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.welcome-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.login-btn {
+    width: 220px;
+    margin: 10px;
+    padding: 15px 25px;
+    font-size: 1.1em;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.stats-card {
+    text-align: center;
+    padding: 25px;
+    border-radius: 15px;
+    color: white;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+}
+
+.stats-card:hover {
+    transform: scale(1.05);
+}
+
+.stats-card.primary { background: linear-gradient(135deg, #667eea, #764ba2); }
+.stats-card.success { background: linear-gradient(135deg, #4CAF50, #45a049); }
+.stats-card.warning { background: linear-gradient(135deg, #ff9800, #f57c00); }
+.stats-card.info { background: linear-gradient(135deg, #2196F3, #1976D2); }
+
+.logo-image {
+    width: 300px; /* Increased from 200px */
+    height: 200px; /* Increased from 150px */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px auto;
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    overflow: hidden;
+}
+
+.logo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* This is good - keeps aspect ratio */
+    border-radius: 10px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .welcome-card {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+
+    .login-btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .dashboard-card {
+        padding: 15px;
+    }
+}
+
+/* Animation for alerts */
+.alert {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Text Logo Styles */
+.text-logo {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.text-logo .pce-text {
+    font-size: 3.5rem;
+    margin-bottom: 8px;
+    font-weight: 900;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.text-logo .college-name {
+    font-size: 1.1rem;
+    margin-bottom: 3px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.text-logo .engineering-text {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* Responsive text logo */
+@media (max-width: 768px) {
+    .text-logo .pce-text {
+        font-size: 2.8rem;
+    }
+
+    .text-logo .college-name {
+        font-size: 1rem;
+    }
+
+    .text-logo .engineering-text {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .text-logo .pce-text {
+        font-size: 2.5rem;
+    }
+
+    .text-logo .college-name {
+        font-size: 0.9rem;
+    }
+
+    .text-logo .engineering-text {
+        font-size: 1.1rem;
+    }
+}

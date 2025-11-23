@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">Leave Request Review</h2>
+                <div>
+                    <a href="{{ url_for('admin_pending_requests') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Requests
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Left Column: Request Details -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Request Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Faculty:</strong></div>
+                                <div class="col-sm-8">{{ faculty.full_name }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Department:</strong></div>
+                                <div class="col-sm-8">{{ faculty.department }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Email:</strong></div>
+                                <div class="col-sm-8">{{ faculty.email }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Leave Category:</strong></div>
+                                <div class="col-sm-8">
+                                    <span class="badge
+                                        {% if request.leave_category == 'medical' %}bg-danger
+                                        {% elif request.leave_category == 'casual' %}bg-info
+                                        {% else %}bg-success{% endif %}">
+                                        {{ request.leave_category.title() }} Leave
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Leave Type:</strong></div>
+                                <div class="col-sm-8">
+                                    <span class="badge
+                                        {% if request.leave_type == 'full_day' %}bg-primary
+                                        {% else %}bg-warning text-dark{% endif %}">
+                                        {{ request.leave_type.replace('_', ' ').title() }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Duration:</strong></div>
+                                <div class="col-sm-8">{{ current_duration }} days</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Dates:</strong></div>
+                                <div class="col-sm-8">
+                                    {{ request.start_date.strftime('%d %b %Y') }} to {{ request.end_date.strftime('%d %b %Y') }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Reason:</strong></div>
+                                <div class="col-sm-8">{{ request.reason }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4"><strong>Applied On:</strong></div>
+                                <div class="col-sm-8">{{ request.created_at.strftime('%d %b %Y at %H:%M') }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Faculty Leave Balances -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Faculty Leave Balances</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="border rounded p-3
+                                        {% if request.leave_category == 'medical' %}border-danger border-3 bg-light{% endif %}">
+                                        <div class="h4 text-danger fw-bold">{{ faculty.medical_leave_left }}</div>
+                                        <small class="text-muted">Medical Left</small>
+                                        <div class="small text-muted">Used: {{ faculty.medical_leave_used }}/{{ faculty.medical_leave_total }}</div>
+                                        {% if request.leave_category == 'medical' %}
+                                        <div class="mt-1">
+                                            <small class="badge bg-danger">Current Request</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border rounded p-3
+                                        {% if request.leave_category == 'casual' %}border-primary border-3 bg-light{% endif %}">
+                                        <div class="h4 text-primary fw-bold">{{ faculty.casual_leave_left }}</div>
+                                        <small class="text-muted">Casual Left</small>
+                                        <div class="small text-muted">Used: {{ faculty.casual_leave_used }}/{{ faculty.casual_leave_total }}</div>
+                                        {% if request.leave_category == 'casual' %}
+                                        <div class="mt-1">
+                                            <small class="badge bg-primary">Current Request</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border rounded p-3
+                                        {% if request.leave_category == 'earned' %}border-success border-3 bg-light{% endif %}">
+                                        <div class="h4 text-success fw-bold">{{ faculty.earned_leave_left }}</div>
+                                        <small class="text-muted">Earned Left</small>
+                                        <div class="small text-muted">Used: {{ faculty.earned_leave_used }}/{{ faculty.earned_leave_total }}</div>
+                                        {% if request.leave_category == 'earned' %}
+                                        <div class="mt-1">
+                                            <small class="badge bg-success">Current Request</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Faculty History and Actions -->
+                <div class="col-lg-6">
+                    <!-- Leave History -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Leave History</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if leave_history %}
+                            <div class="table-responsive" style="max-height: 300px;">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Days</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for history in leave_history %}
+                                        <tr>
+                                            <td>{{ history.start_date.strftime('%d/%m') }} - {{ history.end_date.strftime('%d/%m') }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ 'danger' if history.leave_category == 'medical' else 'primary' if history.leave_category == 'casual' else 'success' }}">
+                                                    {{ history.leave_category|first|upper }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if history.leave_type == 'half_day' %}
+                                                {{ ((history.end_date - history.start_date).days + 1) * 0.5 }}
+                                                {% else %}
+                                                {{ (history.end_date - history.start_date).days + 1 }}
+                                                {% endif %}
+                                            </td>
+                                            <td><span class="badge bg-success">Approved</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center">No previous leave history found.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Leave Statistics -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Leave Statistics</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-6 mb-3">
+                                    <div class="border rounded p-2">
+                                        <div class="h6 text-danger">Medical Taken</div>
+                                        <div class="h4 fw-bold">{{ medical_taken }}</div>
+                                        <small class="text-muted">Days</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="border rounded p-2">
+                                        <div class="h6 text-primary">Casual Taken</div>
+                                        <div class="h4 fw-bold">{{ casual_taken }}</div>
+                                        <small class="text-muted">Days</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="border rounded p-2">
+                                        <div class="h6 text-success">Earned Taken</div>
+                                        <div class="h4 fw-bold">{{ earned_taken }}</div>
+                                        <small class="text-muted">Days</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="border rounded p-2">
+                                        <div class="h6 text-info">Total Taken</div>
+                                        <div class="h4 fw-bold">{{ medical_taken + casual_taken + earned_taken }}</div>
+                                        <small class="text-muted">Days</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Letter Viewing and Approval Actions -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Decision & Letter Viewing</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Enhanced Letter Viewing -->
+                            <div class="text-center mb-4">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Enhanced Letter Feature:</strong> View complete leave history with current request
+                                </div>
+                                <a href="{{ url_for('view_letter', request_id=request.id) }}"
+                                   class="btn btn-info w-100 mb-2" target="_blank">
+                                    <i class="fas fa-eye me-2"></i> View Complete Leave Letter
+                                </a>
+                                <small class="text-muted">Includes current request + past leave history + statistics</small>
+                            </div>
+
+                            <hr>
+
+                            <!-- Approval Form -->
+                            <form method="POST" action="{{ url_for('admin_approve_request', request_id=request.id) }}" class="mb-3">
+                                <div class="mb-3">
+                                    <label for="approveComments" class="form-label">Comments (Optional):</label>
+                                    <textarea class="form-control" id="approveComments" name="admin_comments" rows="2" placeholder="Add comments for approval..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-check me-2"></i> Approve Leave Request
+                                </button>
+                            </form>
+
+                            <!-- Rejection Form -->
+                            <form method="POST" action="{{ url_for('admin_reject_request', request_id=request.id) }}">
+                                <div class="mb-3">
+                                    <label for="rejectComments" class="form-label">Rejection Reason:</label>
+                                    <textarea class="form-control" id="rejectComments" name="admin_comments" rows="2" placeholder="Please provide reason for rejection..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="fas fa-times me-2"></i> Reject Leave Request
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

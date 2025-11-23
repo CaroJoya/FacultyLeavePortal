@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">👥 Faculty Management</h2>
+                <div>
+                    <a href="{{ url_for('admin_add_faculty') }}" class="btn btn-success">
+                        <i class="fas fa-user-plus me-2"></i> Add New Faculty
+                    </a>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+
+            {% if faculty_stats %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Faculty Details</th>
+                            <th>Contact</th>
+                            <th>Leave Balances</th>
+                            <th>Leave History</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in faculty_stats %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar me-3">
+                                        {{ stat.faculty.full_name[0] }}{{ stat.faculty.full_name.split(' ')[1][0] if stat.faculty.full_name.split(' ')|length > 1 else stat.faculty.full_name[1] }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ stat.faculty.full_name }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ stat.faculty.designation }} • {{ stat.faculty.department }}
+                                            {% if stat.faculty.employee_id %}
+                                            <br>ID: {{ stat.faculty.employee_id }}
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <i class="fas fa-envelope me-1 text-muted"></i> {{ stat.faculty.email }}
+                                    {% if stat.faculty.phone_number %}
+                                    <br><i class="fas fa-phone me-1 text-muted"></i> {{ stat.faculty.phone_number }}
+                                    {% endif %}
+                                    {% if stat.faculty.date_of_joining %}
+                                    <br><i class="fas fa-calendar me-1 text-muted"></i> {{ stat.faculty.date_of_joining.strftime('%d/%m/%Y') }}
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="leave-balances">
+                                    <span class="badge bg-danger mb-1">🏥 {{ stat.faculty.medical_leave_left }}/{{ stat.faculty.medical_leave_total }}</span>
+                                    <br>
+                                    <span class="badge bg-primary mb-1">🏖️ {{ stat.faculty.casual_leave_left }}/{{ stat.faculty.casual_leave_total }}</span>
+                                    <br>
+                                    <span class="badge bg-success">💰 {{ stat.faculty.earned_leave_left }}/{{ stat.faculty.earned_leave_total }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-center">
+                                    <span class="badge bg-success d-block mb-1">{{ stat.approved_leaves }} Approved</span>
+                                    {% if stat.pending_leaves > 0 %}
+                                    <span class="badge bg-warning d-block">{{ stat.pending_leaves }} Pending</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary d-block">0 Pending</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-success">Active</span>
+                            </td>
+                            <td>
+                                <div class="btn-group-vertical btn-group-sm">
+                                    <form method="POST" action="{{ url_for('admin_reset_faculty_password', faculty_id=stat.faculty.id) }}"
+                                          class="d-inline" onsubmit="return confirm('Reset password for {{ stat.faculty.full_name }}?')">
+                                        <button type="submit" class="btn btn-warning btn-sm mb-1" title="Reset Password">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_delete_faculty', faculty_id=stat.faculty.id) }}"
+                                          class="d-inline" onsubmit="return confirm('Permanently delete {{ stat.faculty.full_name }}? This cannot be undone!')">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete Faculty">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-users fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No Faculty Found</h4>
+                <p class="text-muted">No faculty members are registered in the system.</p>
+                <a href="{{ url_for('admin_add_faculty') }}" class="btn btn-success">
+                    <i class="fas fa-user-plus me-2"></i> Add First Faculty
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PCE Faculty Portal{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #17c964;
+            --warning: #f5a623;
+            --info: #007bff;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --card-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+            --sidebar-width: 250px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: #495057;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 4px solid white;
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            height: 100%;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 400px;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar-header h3, .sidebar-menu span {
+                display: none;
+            }
+
+            .sidebar-menu i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user-graduate me-2"></i> PCE Faculty</h3>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <!-- Dashboard Link - Different for Admin vs Faculty -->
+                <li>
+                    {% if current_user.username == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                        <i class="fas fa-home"></i> <span>Dashboard</span>
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-home"></i> <span>Dashboard</span>
+                    </a>
+                    {% endif %}
+                </li>
+
+                <!-- Admin Only Links -->
+                {% if current_user.username == 'admin' %}
+                <li><a href="{{ url_for('admin_pending_requests') }}" class="{% if request.endpoint == 'admin_pending_requests' %}active{% endif %}"><i class="fas fa-tasks"></i> <span>Pending Requests</span></a></li>
+                <li><a href="{{ url_for('admin_faculty_list') }}" class="{% if request.endpoint == 'admin_faculty_list' %}active{% endif %}"><i class="fas fa-users"></i> <span>Faculty Management</span></a></li>
+                {% else %}
+                <!-- Faculty Links -->
+                <li><a href="{{ url_for('request_leave') }}" class="{% if request.endpoint == 'request_leave' %}active{% endif %}"><i class="fas fa-calendar-alt"></i> <span>Request Leave</span></a></li>
+                <li><a href="{{ url_for('status') }}" class="{% if request.endpoint == 'status' %}active{% endif %}"><i class="fas fa-tasks"></i> <span>Leave Status</span></a></li>
+                <!-- Faculty Only: Leave History and Analytics -->
+                <li><a href="{{ url_for('history') }}" class="{% if request.endpoint == 'history' %}active{% endif %}"><i class="fas fa-history"></i> <span>Leave History</span></a></li>
+                <li><a href="{{ url_for('stats') }}" class="{% if request.endpoint == 'stats' %}active{% endif %}"><i class="fas fa-chart-bar"></i> <span>Analytics</span></a></li>
+                {% endif %}
+
+                <!-- Common Links for Both -->
+                <li><a href="{{ url_for('profile') }}" class="{% if request.endpoint == 'profile' %}active{% endif %}"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="{% if current_user.is_authenticated %}main-content{% endif %}">
+        {% if current_user.is_authenticated %}
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" id="sidebarToggle">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="d-flex align-items-center ms-auto">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            {{ current_user.full_name[0] }}{{ current_user.full_name.split(' ')[1][0] if current_user.full_name.split(' ')|length > 1 else current_user.full_name[1] }}
+                        </div>
+                        <div>
+                            <div class="fw-bold">{{ current_user.full_name }}</div>
+                            <small class="text-muted">{{ current_user.department }}</small>
+                            {% if current_user.username == 'admin' %}
+                            <span class="badge bg-success ms-1">Admin</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        {% endif %}
+
+        <!-- Flash Messages - UPDATED WITH CATEGORY SUPPORT -->
+        <div class="alert-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == 'password_change' %}
+                            <div class="alert alert-{{ 'success' if 'success' in message else 'danger' }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-{{ 'success' if 'success' in message else 'danger' if 'error' in message else 'info' }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar.style.width === '0px' || sidebar.style.width === '') {
+                sidebar.style.width = '250px';
+            } else {
+                sidebar.style.width = '0';
+            }
+        });
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

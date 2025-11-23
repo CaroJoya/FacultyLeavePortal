@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="dashboard-card">
+            <h2 class="mb-4">👤 Faculty Profile</h2>
+
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="user-avatar mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2rem;">
+                        {{ user.full_name[0] }}{{ user.full_name.split(' ')[1][0] if user.full_name.split(' ')|length > 1 else user.full_name[1] }}
+                    </div>
+                    <h5 class="fw-bold">{{ user.full_name }}</h5>
+                    <p class="text-muted">{{ user.department }}</p>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label fw-bold">Faculty ID</label>
+                            <p class="form-control-plaintext">{{ user.username }}</p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            <p class="form-control-plaintext">{{ user.email }}</p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label fw-bold">Department</label>
+                            <p class="form-control-plaintext">{{ user.department }}</p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label fw-bold">Member Since</label>
+                            <p class="form-control-plaintext">{{ user.created_at.strftime('%d %B %Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Reset Section -->
+        <div class="dashboard-card mt-4">
+            <div class="card-header bg-warning">
+                <h5 class="card-title mb-0">🔐 Password Reset</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Reset Your Password</h6>
+                        <form action="{{ url_for('reset_my_password') }}" method="POST" id="resetPasswordForm">
+                            <div class="mb-3">
+                                <label for="current_password" class="form-label">Current Password</label>
+                                <input type="password" class="form-control" id="current_password" name="current_password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="new_password" class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="new_password" name="new_password" required>
+                                <div class="form-text">Password must be at least 6 characters with letters and numbers</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Reset Password</button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Password Requirements</h6>
+                        <ul class="list-unstyled">
+                            <li>✅ Minimum 6 characters</li>
+                            <li>✅ At least one letter</li>
+                            <li>✅ At least one number</li>
+                            <li>❌ No special characters required</li>
+                        </ul>
+
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <h6>🔒 Security Tips</h6>
+                            <ul class="small">
+                                <li>Use a unique password you don't use elsewhere</li>
+                                <li>Change your password regularly</li>
+                                <li>Don't share your password with anyone</li>
+                                <li>Log out after each session</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Existing Change Password Section -->
+        <div class="dashboard-card mt-4">
+            <h4 class="mb-4">🔐 Change Password</h4>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == 'password_change' %}
+                            <div class="alert alert-{{ 'success' if 'success' in message else 'danger' }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('change_password') }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="current_password_old" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="current_password_old" name="current_password" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="new_password_old" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="new_password_old" name="new_password" required>
+                            <div class="form-text">
+                                Password must be at least 6 characters long.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirm_password_old" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirm_password_old" name="confirm_password" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key me-2"></i> Change Password
+                        </button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title"><i class="fas fa-shield-alt me-2"></i>Password Requirements</h6>
+                                <ul class="list-unstyled small">
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Minimum 6 characters</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Use a combination of letters and numbers</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Avoid common words and patterns</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Don't reuse old passwords</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="dashboard-card">
+            <h5 class="card-title mb-4">📊 Leave Summary</h5>
+
+            <!-- Medical Leave -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-bold text-danger">🏥 Medical Leave</span>
+                    <span class="fw-bold">{{ user.medical_leave_used }}/{{ user.medical_leave_total }} days</span>
+                </div>
+                <div class="progress mb-3" style="height: 15px;">
+                    {% set medical_percentage = (user.medical_leave_used / user.medical_leave_total * 100) if user.medical_leave_total > 0 else 0 %}
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ medical_percentage }}%">
+                        {{ medical_percentage|round|int }}%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Casual Leave -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-bold text-primary">🏖️ Casual Leave</span>
+                    <span class="fw-bold">{{ user.casual_leave_used }}/{{ user.casual_leave_total }} days</span>
+                </div>
+                <div class="progress mb-3" style="height: 15px;">
+                    {% set casual_percentage = (user.casual_leave_used / user.casual_leave_total * 100) if user.casual_leave_total > 0 else 0 %}
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ casual_percentage }}%">
+                        {{ casual_percentage|round|int }}%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earned Leave -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-bold text-success">💰 Earned Leave (From Overwork)</span>
+                    <span class="fw-bold">{{ user.earned_leave_used }}/{{ user.earned_leave_total }} days</span>
+                </div>
+                <div class="progress mb-3" style="height: 15px;">
+                    {% set earned_percentage = (user.earned_leave_used / user.earned_leave_total * 100) if user.earned_leave_total > 0 else 0 %}
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ earned_percentage }}%">
+                        {{ earned_percentage|round|int }}%
+                    </div>
+                </div>
+                <div class="text-center small text-muted">
+                    🔥 Earned from {{ user.overwork_hours }} converted overwork hours
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <h6 class="fw-bold mb-3">📈 Quick Stats</h6>
+            <div class="list-group list-group-flush">
+                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>🏥 Medical Used</span>
+                    <span class="badge bg-danger rounded-pill">{{ user.medical_leave_used }} days</span>
+                </div>
+                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>🏖️ Casual Used</span>
+                    <span class="badge bg-primary rounded-pill">{{ user.casual_leave_used }} days</span>
+                </div>
+                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>💰 Earned Used</span>
+                    <span class="badge bg-success rounded-pill">{{ user.earned_leave_used }} days</span>
+                </div>
+                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>⏰ Overwork Hours</span>
+                    <span class="badge bg-warning rounded-pill">{{ user.overwork_hours }} hours</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card mt-4">
+            <h5 class="card-title mb-4">⚙️ System Information</h5>
+            <div class="list-group list-group-flush">
+                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>📅 Academic Year</span>
+                    <span class="text-muted">{{ user.current_year }}</span>
+                </div>
+                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>🔐 Last Login</span>
+                    <span class="text-muted">Today</span>
+                </div>
+                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span>✅ Account Status</span>
+                    <span class="badge bg-success">Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Password confirmation validation for reset form
+document.addEventListener('DOMContentLoaded', function() {
+    const resetForm = document.getElementById('resetPasswordForm');
+    const newPassword = document.getElementById('new_password');
+    const confirmPassword = document.getElementById('confirm_password');
+
+    resetForm.addEventListener('submit', function(e) {
+        if (newPassword.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('❌ New password and confirmation password do not match!');
+            confirmPassword.focus();
+        }
+
+        if (newPassword.value.length < 6) {
+            e.preventDefault();
+            alert('❌ Password must be at least 6 characters long!');
+            newPassword.focus();
+        }
+
+        // Check if password contains at least one letter and one number
+        const hasLetter = /[a-zA-Z]/.test(newPassword.value);
+        const hasNumber = /[0-9]/.test(newPassword.value);
+
+        if (!hasLetter || !hasNumber) {
+            e.preventDefault();
+            alert('❌ Password must contain at least one letter and one number!');
+            newPassword.focus();
+        }
+    });
+
+    // Real-time password match indicator
+    function checkPasswordMatch() {
+        if (newPassword.value && confirmPassword.value) {
+            if (newPassword.value === confirmPassword.value) {
+                confirmPassword.style.borderColor = '#28a745';
+            } else {
+                confirmPassword.style.borderColor = '#dc3545';
+            }
+        }
+    }
+
+    newPassword.addEventListener('input', checkPasswordMatch);
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+});
+
+// Password confirmation validation for change password form
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[action="{{ url_for("change_password") }}"]');
+    const newPassword = document.getElementById('new_password_old');
+    const confirmPassword = document.getElementById('confirm_password_old');
+
+    form.addEventListener('submit', function(e) {
+        if (newPassword.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('❌ New password and confirmation password do not match!');
+            confirmPassword.focus();
+        }
+
+        if (newPassword.value.length < 6) {
+            e.preventDefault();
+            alert('❌ Password must be at least 6 characters long!');
+            newPassword.focus();
+        }
+    });
+
+    // Real-time password match indicator
+    function checkPasswordMatch() {
+        if (newPassword.value && confirmPassword.value) {
+            if (newPassword.value === confirmPassword.value) {
+                confirmPassword.style.borderColor = '#28a745';
+            } else {
+                confirmPassword.style.borderColor = '#dc3545';
+            }
+        }
+    }
+
+    newPassword.addEventListener('input', checkPasswordMatch);
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+});
+</script>
+
+<style>
+.text-success { color: #28a745 !important; }
+.text-danger { color: #dc3545 !important; }
+.is-valid { border-color: #28a745 !important; }
+.is-invalid { border-color: #dc3545 !important; }
+input:disabled {
+    background-color: #f0f0f0;
+    color: #666;
+    cursor: not-allowed;
+}
+small {
+    font-size: 0.8em;
+    color: #666;
+}
+</style>
+{% endblock %}

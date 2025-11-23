@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCE Faculty Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        .logo-img {
+            max-width: 300px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="PCE Logo" class="logo-img">
+        </div>
+
+        <!-- Main Content -->
+        <div class="text-center">
+            <h1 class="display-4 fw-bold mb-4">PCE FACULTY PORTAL</h1>
+            <h2 class="h3 fw-light mb-4">
+                YOUR <span class="text-warning fw-bold">ALL-IN-ONE</span> SOLUTION FOR FACULTY MANAGEMENT
+            </h2>
+
+            <p class="lead mb-5">
+                Streamline attendance tracking, leave applications, and administrative tasks with our comprehensive faculty portal.
+            </p>
+
+            <a href="{{ url_for('login') }}" class="btn btn-warning btn-lg px-5 py-3 fw-bold mb-5">
+                ACCESS FACULTY PORTAL <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+
+        <!-- Features -->
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="text-center p-4 rounded" style="background: rgba(255,255,255,0.1);">
+                    <i class="fas fa-calendar-alt fa-3x text-warning mb-3"></i>
+                    <h4>Leave Management</h4>
+                    <p>Apply for leaves, track approvals, and manage your time off with our intuitive system.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center p-4 rounded" style="background: rgba(255,255,255,0.1);">
+                    <i class="fas fa-user-check fa-3x text-warning mb-3"></i>
+                    <h4>Attendance Tracking</h4>
+                    <p>Easily log and monitor your attendance with real-time updates and reporting.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center p-4 rounded" style="background: rgba(255,255,255,0.1);">
+                    <i class="fas fa-chart-line fa-3x text-warning mb-3"></i>
+                    <h4>Performance Analytics</h4>
+                    <p>Gain insights into your work patterns with detailed analytics and reports.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-5 pt-5">
+            <p class="text-muted">© 2023 PCE Faculty Portal. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
